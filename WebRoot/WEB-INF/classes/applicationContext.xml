@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">    
+    
+    <!-- 配置c3p0连接池 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+      <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+      <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/e_book"></property>
+      <property name="user" value="root"></property>
+      <property name="password" value="root"></property>
+    </bean>
+    
+    
+    <!-- 配置hibernate -->
+    <!-- 1.先配置sessionFactory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+      <property name="dataSource" ref="dataSource"></property>
+      <property name="configLocations" value="classpath:hibernate.cfg.xml"></property>
+    </bean>
+    
+    <!-- 2.开启事务管理器，用注解方式使用事务 -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+      <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    <!-- 开启事务，记得在需要开启事务的类上 使用@Transaction-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    
+    
+    <!--3. 配置hibernate模板 -->
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+      <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    
+
+       <!-- 配置action -->
+       
+       <import resource="classpath:action.xml"/>
+
+
+       <!-- 配置dao -->
+       <bean id="adminDao" class="org.dao.AdminDao">
+         <property name="hibernateTemplate" ref="hibernateTemplate"></property>
+       </bean>
+       <bean id="bookDao" class="org.dao.BooksDao">
+         <property name="hibernateTemplate" ref="hibernateTemplate"></property>
+       </bean>
+       <bean id="stockDao" class="org.dao.StockDao">
+          <property name="hibernateTemplate" ref="hibernateTemplate"></property>
+       </bean>
+       <bean id="userDao" class="org.dao.UserDao">
+         <property name="hibernateTemplate" ref="hibernateTemplate"></property>
+       </bean>
+       
+       
+       <!-- 配置Service -->
+       <bean id="bookService" class="org.service.impl.BookService">
+          <property name="booksDao" ref="bookDao"></property>
+          <property name="stockDao" ref="stockDao"></property>
+       </bean>
+       <bean id="buyService" class="org.service.impl.BuyService">
+          <property name="booksDao" ref="bookDao"></property>
+          <property name="stockDao" ref="stockDao"></property>
+       </bean>
+       <bean id="registerService" class="org.service.impl.RegisterService">
+          <property name="userDao" ref="userDao"></property>
+       </bean>
+       <bean id="userService" class="org.service.impl.UserService">
+          <property name="userDao" ref="userDao"></property>
+       </bean>
+       
+       
+</beans>

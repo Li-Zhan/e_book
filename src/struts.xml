@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd"><struts>
+<package name="default" extends="struts-default">
+		<action name="login" class="loginAction">
+			<result name="error">/loginform.jsp</result>
+			<result name="admin" type="redirect">userAction_findAll</result>
+			<result name="user">/index.html</result>
+		</action>
+		<action name="register" class="registerAction">
+			<result name="error">/register.jsp</result>
+			<result name="success">/register.jsp</result>
+		</action>
+		<action name="getImage" class="registerAction" method="getImage"></action>
+		<action name="addbook" class="bookAction" method="addBook">
+			<result name="error">/admin/addbook.jsp</result>
+			<result name="success" type="redirect">bookAction_findAll</result>
+		</action>
+		<action name="deletebook" class="bookAction" method="deleteBook">
+			<result name="success" type="redirect">bookAction_findAll</result>
+		</action>
+		<action name="findbook" class="bookAction" method="findBook">
+			<result name="success">/admin/findbook.jsp</result>
+			<result name="error">/admin/findbook.jsp</result>
+		</action>
+		<action name="updatebook" class="bookAction" method="updateBook">
+			<result name="success" type="redirect">bookAction_findAll</result>
+			<result name="error">/error.jsp</result>
+		</action>
+		<action name="getImage2" class="bookAction" method="getImage2"></action>
+		<action name="adduser" class="userAction" method="addUser">
+		  	<result name="success">/admin/admin_add.jsp</result>
+			<result name="error">/admin/admin_add.jsp</result>
+		</action>
+		<action name="deleteuser" class="userAction" method="deleteUser">
+		    <result name="success" type="redirect">userAction_findAll</result>
+		</action>
+		<action name="finduser" class="userAction" method="findUser">
+		    <result name="success">/admin/admin_find.jsp</result>
+		    <result name="error">/admin/admin_find.jsp</result>
+		</action>
+		<action name="updateuser" class="userAction" method="updateUser">
+		    <result name="success" type="redirect">userAction_findAll</result>
+		    <result name="error">adminset.jsp</result>
+		</action>
+		<action name="updateuser2" class="userAction" method="updateUser2">
+		    <result name="success">/user/userset.jsp</result>
+		    <result name="error">/user/userset.jsp</result>
+		</action>
+		<action name="buycartbook" class="buyAction" method="buyCartBook">
+		  <result name="success">/user/showCart.jsp</result>
+		</action>
+		<action name="buybook" class="buyAction" method="buyBook">
+		  <result name="success">/user/showCart.jsp</result>
+		</action>
+		<action name="removecartbook" class="buyAction" method="removeCartBook">
+		  <result name="success">/user/showCart.jsp</result>
+		</action>
+		
+		<action name="userAction_*" class="userAction" method="{1}">
+		  <result name="findAll">adminset.jsp</result>
+		</action>
+		
+		<action name="bookAction_*" class="bookAction" method="{1}">
+		  <result name="findAll">${pageContext.request.contextPath}/admin/admin_book.jsp</result>
+		</action>
+
+
+	</package>
+</struts>
